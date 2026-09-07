@@ -16,6 +16,12 @@ The point is simple: do one small thing, return to what matters.
 
 The default rhythm is one break every 20 minutes. A focused popup appears, counts down for five seconds, and starts itself. When the activity ends, complete it with one click or a keyboard shortcut and collect points immediately.
 
+<p align="center">
+  <img src="docs/images/dashboard.png" width="385" alt="NanoBreaks menu-bar dashboard showing the next break, points, streak, weekly chart, task history, queue controls, and break actions">
+</p>
+
+<p align="center"><em>The menu-bar dashboard keeps the next break, private progress, task mix, and quick actions in one small place.</em></p>
+
 ## What you get
 
 - **1,000 desk-friendly activities** across eyes, movement, mobility, calm, hydration, brain sparks, voice, writing, rhythm, mindfulness, and affirmations.
