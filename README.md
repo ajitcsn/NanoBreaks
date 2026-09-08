@@ -36,6 +36,12 @@ NanoBreaks starts with eye relief, then goes wider. Some moments call for lookin
 
 Writing activities use a real text field. Brain sparks have answers to reveal. Movement adapts to Seated-only, Quiet-office, or Standard mode. Every activity is short, practical, and designed to be easy to swap when the moment is wrong.
 
+<p align="center">
+  <img src="docs/images/sample-task-gallery.png" width="620" alt="Four NanoBreaks activity examples: looking into the distance, a desk-friendly wall pushup, a short writing prompt, and a calm voice exercise">
+</p>
+
+<p align="center"><em>Examples from the rotation: eye relief, desk movement, writing, and calm or voice prompts.</em></p>
+
 ## Make it yours
 
 In **Settings → Activities**, add a private prompt of your own: choose a category, name it, write the instruction, and set a 20–60 second duration. A custom activity receives the same category color, points, completion flow, swap controls, and fair rotation as the built-in catalogue.
