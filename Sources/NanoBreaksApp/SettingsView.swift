@@ -5,6 +5,10 @@ struct SettingsView: View {
     @ObservedObject var model: AppModel
     @State private var confirmProgressReset = false
     @State private var confirmFullReset = false
+    @State private var customTitle = ""
+    @State private var customInstruction = ""
+    @State private var customCategory = ActivityCategory.calm
+    @State private var customSeconds = 30
 
     var body: some View {
         TabView {
@@ -12,6 +16,8 @@ struct SettingsView: View {
                 .tabItem { Label("General", systemImage: "gear") }
             mix
                 .tabItem { Label("Mix", systemImage: "square.grid.2x2") }
+            customActivities
+                .tabItem { Label("Activities", systemImage: "plus.rectangle.on.rectangle") }
             schedule
                 .tabItem { Label("Schedule", systemImage: "calendar") }
             progress
@@ -20,7 +26,7 @@ struct SettingsView: View {
                 .tabItem { Label("About", systemImage: "info.circle") }
         }
         .padding(18)
-        .frame(width: 620, height: 470)
+        .frame(width: 620, height: 500)
     }
 
     private var general: some View {
@@ -144,6 +150,68 @@ struct SettingsView: View {
             )
             Text("At least one active day stays enabled.")
                 .font(.caption).foregroundStyle(.secondary)
+        }
+        .formStyle(.grouped)
+    }
+
+    private var customActivities: some View {
+        Form {
+            Section("Make it yours") {
+                TextField("Activity name", text: $customTitle)
+                TextField("What should you do?", text: $customInstruction, axis: .vertical)
+                    .lineLimit(2...4)
+                Picker("Category", selection: $customCategory) {
+                    ForEach(ActivityCategory.allCases) { category in
+                        Label(category.title, systemImage: category.symbol).tag(category)
+                    }
+                }
+                Stepper("Duration: \(customSeconds) sec", value: $customSeconds, in: 20...60, step: 5)
+                Button("Add to rotation") {
+                    model.addCustomActivity(
+                        title: customTitle,
+                        instruction: customInstruction,
+                        category: customCategory,
+                        seconds: customSeconds
+                    )
+                    customTitle = ""
+                    customInstruction = ""
+                    customCategory = .calm
+                    customSeconds = 30
+                }
+                .disabled(
+                    customTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
+                    customInstruction.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                )
+            }
+
+            Section("Your activities") {
+                if model.customActivities.isEmpty {
+                    Text("Add a private prompt for a ritual, stretch, reminder, or tiny reset you already like.")
+                        .foregroundStyle(.secondary)
+                } else {
+                    ForEach(model.customActivities) { activity in
+                        HStack(alignment: .firstTextBaseline, spacing: 10) {
+                            Image(systemName: activity.category.symbol)
+                                .foregroundStyle(color(for: activity.category))
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(activity.title).fontWeight(.medium)
+                                Text("\(activity.category.title) · \(activity.seconds) sec")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            Spacer()
+                            Button("Remove", role: .destructive) {
+                                model.removeCustomActivity(activity)
+                            }
+                            .buttonStyle(.borderless)
+                        }
+                    }
+                }
+            }
+
+            Text("Custom activities stay on this Mac and use the same category colors, points, swap controls, and fair rotation as built-in activities.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
         }
         .formStyle(.grouped)
     }

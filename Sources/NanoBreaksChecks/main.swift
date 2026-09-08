@@ -65,6 +65,36 @@ private func checkMovementModes() {
 }
 
 @MainActor
+private func checkCustomActivities() {
+    let custom = CustomActivity(
+        category: .calm,
+        title: "Desk reset",
+        instruction: "Put one item back where it belongs.",
+        seconds: 5
+    )
+    expect(custom.seconds == 20, "custom activities keep the short-break minimum")
+    expect(
+        custom.definition.id.hasPrefix("custom.") &&
+        custom.definition.category == .calm &&
+        custom.definition.format.minimumSeconds == 20,
+        "custom activities become normal selectable activities"
+    )
+
+    var settings = AppSettings()
+    settings.enabledCategories = [.calm]
+    settings.customActivities = [custom]
+    let selected = ActivitySelectionEngine.select(
+        catalog: [custom.definition],
+        settings: settings,
+        progress: DailyProgress(localDate: "2026-09-08"),
+        scheduler: SchedulerSnapshot(),
+        now: Date(),
+        seed: 1
+    )
+    expect(selected?.id == custom.definition.id, "custom activities enter the normal rotation")
+}
+
+@MainActor
 private func checkCategoryCadence() {
     let settings = AppSettings()
     let progress = DailyProgress(localDate: "2026-08-24")
@@ -319,9 +349,13 @@ private func checkPopupColorCompatibility() {
     let encoded = try! JSONEncoder().encode(settings)
     var legacyObject = try! JSONSerialization.jsonObject(with: encoded) as! [String: Any]
     legacyObject.removeValue(forKey: "popupColorMode")
+    legacyObject.removeValue(forKey: "customActivities")
     let legacyData = try! JSONSerialization.data(withJSONObject: legacyObject)
     let decoded = try! JSONDecoder().decode(AppSettings.self, from: legacyData)
-    expect(decoded.popupColorMode == nil, "older saved settings load without a popup color mode")
+    expect(
+        decoded.popupColorMode == nil && decoded.customActivities == nil,
+        "older saved settings load without optional new preferences"
+    )
 }
 
 @MainActor
@@ -339,6 +373,7 @@ private func checkSchedulerCompatibility() {
 
 checkCatalog()
 checkMovementModes()
+checkCustomActivities()
 checkCategoryCadence()
 checkLongRunCategoryMix()
 checkHydrationCooldown()

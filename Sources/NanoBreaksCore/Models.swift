@@ -187,6 +187,38 @@ public struct ActivityDefinition: Identifiable, Codable, Equatable, Sendable {
     }
 }
 
+public struct CustomActivity: Identifiable, Codable, Equatable, Sendable {
+    public let id: UUID
+    public let category: ActivityCategory
+    public let title: String
+    public let instruction: String
+    public let seconds: Int
+
+    public init(
+        id: UUID = UUID(),
+        category: ActivityCategory,
+        title: String,
+        instruction: String,
+        seconds: Int
+    ) {
+        self.id = id
+        self.category = category
+        self.title = title
+        self.instruction = instruction
+        self.seconds = min(60, max(20, seconds))
+    }
+
+    public var definition: ActivityDefinition {
+        ActivityDefinition(
+            id: "custom.\(id.uuidString.lowercased())",
+            category: category,
+            title: title,
+            instruction: instruction,
+            format: .timed(seconds: seconds)
+        )
+    }
+}
+
 public struct AppSettings: Codable, Equatable, Sendable {
     public var reminderIntervalMinutes = 20
     public var activeDays: Set<Int> = [2, 3, 4, 5, 6]
@@ -204,6 +236,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
     public var onboardingComplete = false
     public var popupTheme: PopupTheme? = .coral
     public var popupColorMode: PopupColorMode? = .category
+    public var customActivities: [CustomActivity]? = []
 
     public init() {}
 }

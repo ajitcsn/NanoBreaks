@@ -304,7 +304,13 @@ MVP activities include noticing one complete breath, checking three body areas, 
 
 MVP affirmations include “I am working on something important to me right now,” “Small, steady effort counts,” “I can choose the next useful step,” and “My attention can return, gently.” Avoid grandiose, compulsory-positive, medical, financial, or outcome-guaranteeing statements.
 
-### 7.12 Candidate future packs
+### 7.12 Custom activities
+
+Users can create private timed activities in Settings. Each activity has a title, instruction, existing category, and a duration from 20 to 60 seconds. Custom activities use the normal selection, color, points, and swap systems, remain on-device, and can be removed at any time.
+
+Custom activities are not a medical or fitness-authoring tool. The same universal safety guidance applies, and they do not support specialised clinical exercise formats.
+
+### 7.13 Candidate future packs
 
 These expand the vision without entering MVP:
 

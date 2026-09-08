@@ -155,6 +155,7 @@ final class AppModel: NSObject, ObservableObject {
 
     var popupTheme: PopupTheme { settings.popupTheme ?? .coral }
     var popupColorMode: PopupColorMode { settings.popupColorMode ?? .category }
+    var customActivities: [CustomActivity] { settings.customActivities ?? [] }
 
     var canCompleteCurrentActivity: Bool {
         guard breakPhase == .active, revealAvailable, let activity = currentActivity else { return false }
@@ -289,7 +290,7 @@ final class AppModel: NSObject, ObservableObject {
             progress.today.swappedCount += 1
         }
         currentActivity = selectActivity(forcedCategory: .eyes, seed: Int.random(in: 0...Int.max))
-            ?? ActivityCatalog.all.first { $0.category == .eyes }
+            ?? selectionCatalog.first { $0.category == .eyes }
         guard let currentActivity else { return }
         recordPresentation(of: currentActivity)
         breakPhase = .due
@@ -376,6 +377,32 @@ final class AppModel: NSObject, ObservableObject {
     func updatePreset(_ preset: MixPreset) {
         settings.mixPreset = preset
         resetPresentationMix()
+        save()
+    }
+
+    func addCustomActivity(
+        title: String,
+        instruction: String,
+        category: ActivityCategory,
+        seconds: Int
+    ) {
+        let trimmedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedInstruction = instruction.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedTitle.isEmpty, !trimmedInstruction.isEmpty else { return }
+        var activities = customActivities
+        activities.append(CustomActivity(
+            category: category,
+            title: trimmedTitle,
+            instruction: trimmedInstruction,
+            seconds: seconds
+        ))
+        settings.customActivities = activities
+        save()
+    }
+
+    func removeCustomActivity(_ activity: CustomActivity) {
+        settings.customActivities = customActivities.filter { $0.id != activity.id }
+        settings.hiddenActivityIDs.remove(activity.definition.id)
         save()
     }
 
@@ -526,12 +553,17 @@ final class AppModel: NSObject, ObservableObject {
         var selectionSettings = settings
         if let forcedCategory { selectionSettings.enabledCategories = [forcedCategory] }
         return ActivitySelectionEngine.select(
+            catalog: selectionCatalog,
             settings: selectionSettings,
             progress: progress.today,
             scheduler: scheduler,
             now: Date(),
             seed: seed
         )
+    }
+
+    private var selectionCatalog: [ActivityDefinition] {
+        ActivityCatalog.all + customActivities.map(\.definition)
     }
 
     private func recordPresentation(of activity: ActivityDefinition) {

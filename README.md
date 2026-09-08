@@ -36,6 +36,12 @@ NanoBreaks starts with eye relief, then goes wider. Some moments call for lookin
 
 Writing activities use a real text field. Brain sparks have answers to reveal. Movement adapts to Seated-only, Quiet-office, or Standard mode. Every activity is short, practical, and designed to be easy to swap when the moment is wrong.
 
+## Make it yours
+
+In **Settings → Activities**, add a private prompt of your own: choose a category, name it, write the instruction, and set a 20–60 second duration. A custom activity receives the same category color, points, completion flow, swap controls, and fair rotation as the built-in catalogue.
+
+Custom activities stay on the Mac. They are never sent anywhere, shared, or used to train anything.
+
 ## Keyboard-first by design
 
 The task popup takes focus when it appears, so the useful controls work immediately.
